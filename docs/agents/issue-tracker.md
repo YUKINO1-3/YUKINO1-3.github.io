@@ -1,29 +1,43 @@
-# Issue tracker: Local Markdown
+# Issue tracker: GitHub
 
-Issues and specs for this repo live as markdown files in `.scratch/`.
+Issues and specs for this repo live as GitHub Issues. Use the `gh` CLI for all operations.
+
+## Repository
+
+`YUKINO1-3/YUKINO1-3.github.io`
+
+Infer the repository from the Git remote when operating inside this clone.
 
 ## Conventions
 
-- One feature per directory: `.scratch/<feature-slug>/`
-- The spec is `.scratch/<feature-slug>/spec.md`
-- Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`, never a single combined tickets file
-- Triage state is recorded as a `Status:` line near the top of each issue file
-- Comments and conversation history append to the bottom of the file under a `## Comments` heading
+- Create issues with `gh issue create`.
+- Read an issue and its comments with `gh issue view <number> --comments`.
+- List issues using structured JSON output and filter by state or label.
+- Add comments with `gh issue comment`.
+- Apply or remove labels with `gh issue edit`.
+- Close an issue with `gh issue close`.
+- PRs are not treated as a triage request surface.
 
 ## When a skill says "publish to the issue tracker"
 
-Create a new file under `.scratch/<feature-slug>/`, creating the directory if needed.
+Create a GitHub Issue in this repository.
 
 ## When a skill says "fetch the relevant ticket"
 
-Read the file at the referenced path. The user will normally pass the path or issue number directly.
+Read the GitHub Issue body, labels, and comments.
+
+## Blocking relationships
+
+Use GitHub native issue dependencies where available. The blocking edge must reference the blocker's numeric database ID rather than its displayed issue number.
+
+If native dependencies are unavailable, include `Blocked by: #<number>` in the child Issue body.
+
+An Issue is unblocked only when all blocking Issues are closed.
 
 ## Wayfinding operations
 
-- Map: `.scratch/<effort>/map.md`
-- Child ticket: `.scratch/<effort>/issues/NN-<slug>.md`
-- `Type:` records `research`, `prototype`, `grilling`, or `task`
-- `Status:` records `claimed` or `resolved`
-- `Blocked by:` lists prerequisite ticket numbers
-- Claim work by setting `Status: claimed` before beginning
-- Resolve by appending an `## Answer`, setting `Status: resolved`, and updating the map
+- A map is one Issue labeled `wayfinder:map`.
+- Child tickets are GitHub sub-issues where supported.
+- Child type uses `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, or `wayfinder:task`.
+- Claim an Issue by assigning it to the active account before beginning work.
+- Resolve by posting the answer, closing the Issue, and updating the map's decisions.
