@@ -1,0 +1,467 @@
+:root {
+  --color-paper: #ffffff;
+  --color-ink: #0d0d0d;
+  --color-muted: #5f6066;
+  --color-line: #c9cbd1;
+  --color-accent: #1e4ed8;
+  --font-display: "Newsreader Variable", "Iowan Old Style", Baskerville, Georgia, serif;
+  --font-ui: "Inter Variable", Inter, system-ui, sans-serif;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --content-width: 94rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 20rem;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.22em;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+:focus-visible {
+  outline: 0.15rem solid var(--color-accent);
+  outline-offset: 0.25rem;
+}
+
+.skip-link {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  left: var(--gutter);
+  padding: 0.75rem 1rem;
+  position: fixed;
+  top: 0;
+  transform: translateY(-120%);
+  transition: transform 140ms ease;
+  z-index: 20;
+}
+
+.skip-link:focus {
+  transform: translateY(0.5rem);
+}
+
+.page-shell {
+  margin: 0 auto;
+  max-width: var(--content-width);
+  padding: 0 var(--gutter);
+}
+
+.site-header {
+  align-items: center;
+  border-bottom: 1px solid var(--color-line);
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.8fr) 2fr minmax(8rem, 0.8fr);
+  min-height: 5rem;
+}
+
+.site-name {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 520;
+  line-height: 0.9;
+  text-decoration: none;
+  width: max-content;
+}
+
+.desktop-navigation ul,
+.mobile-menu ul {
+  display: flex;
+  gap: clamp(1.5rem, 3vw, 3.25rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.desktop-navigation a,
+.mobile-menu a {
+  display: block;
+  font-size: 0.9rem;
+  padding: 1.9rem 0 1.7rem;
+  position: relative;
+  text-decoration: none;
+}
+
+.desktop-navigation a[aria-current="page"] {
+  color: var(--color-accent);
+}
+
+.desktop-navigation a[aria-current="page"]::after {
+  background: var(--color-accent);
+  bottom: -1px;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.profile-state {
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  justify-self: end;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+main {
+  min-height: calc(100vh - 10rem);
+}
+
+.hero {
+  align-items: center;
+  border-bottom: 1px solid var(--color-line);
+  display: grid;
+  gap: clamp(3rem, 6vw, 7rem);
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  min-height: min(42rem, calc(100vh - 5rem));
+  padding: clamp(4.5rem, 10vh, 8rem) 0;
+}
+
+.hero h1,
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.8rem, 7.2vw, 7.5rem);
+  font-weight: 430;
+  letter-spacing: -0.045em;
+  line-height: 0.88;
+  margin: 0;
+  max-width: 12ch;
+}
+
+.hero h1::after {
+  color: var(--color-accent);
+  content: "";
+}
+
+.hero-copy > p {
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  line-height: 1.55;
+  margin: 2.5rem 0 0;
+  max-width: 38rem;
+}
+
+.hero-plot {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+}
+
+.plot-motif {
+  height: auto;
+  max-width: 33rem;
+  overflow: visible;
+  width: 100%;
+}
+
+.plot-axis,
+.plot-tick {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 0.28;
+}
+
+.plot-tick {
+  stroke: var(--color-line);
+}
+
+.plot-point {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-linecap: square;
+  stroke-width: 0.5;
+}
+
+.plot-label {
+  fill: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 3.2px;
+}
+
+.evidence-section,
+.activity-section {
+  border-bottom: 1px solid var(--color-line);
+  display: grid;
+  gap: clamp(2rem, 6vw, 6rem);
+  grid-template-columns: minmax(13rem, 0.75fr) minmax(0, 1.5fr);
+  padding: clamp(3.5rem, 7vw, 7rem) 0;
+}
+
+.evidence-section h2,
+.activity-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.35rem, 4vw, 4rem);
+  font-weight: 430;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0;
+  max-width: 11ch;
+}
+
+.section-copy {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.section-copy p,
+.empty-state p {
+  line-height: 1.65;
+  margin: 0;
+  max-width: 35rem;
+}
+
+.empty-state {
+  align-items: center;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 3.5rem 1fr;
+}
+
+.empty-mark {
+  border: 1px dashed var(--color-ink);
+  display: block;
+  height: 4.5rem;
+  position: relative;
+  width: 3.5rem;
+}
+
+.empty-mark::after {
+  border-left: 1px solid var(--color-line);
+  border-top: 1px solid var(--color-line);
+  content: "";
+  height: 0.8rem;
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 0.8rem;
+}
+
+.empty-title {
+  font-weight: 600;
+  margin-bottom: 0.45rem !important;
+}
+
+.site-footer {
+  align-items: center;
+  color: var(--color-muted);
+  display: flex;
+  font-size: 0.75rem;
+  justify-content: space-between;
+  min-height: 5rem;
+}
+
+.preview-page {
+  display: grid;
+  gap: clamp(3rem, 7vw, 8rem);
+  grid-template-columns: minmax(0, 1.3fr) minmax(16rem, 0.7fr);
+  min-height: calc(100vh - 10rem);
+  padding: clamp(4.5rem, 10vh, 8rem) 0;
+}
+
+.preview-page-copy {
+  align-self: start;
+}
+
+.preview-page-message {
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-top: clamp(3.5rem, 8vw, 8rem);
+  max-width: 34rem;
+}
+
+.preview-page-message p {
+  margin: 0;
+}
+
+.preview-page-message p + p {
+  color: var(--color-muted);
+  margin-top: 0.75rem;
+}
+
+.preview-lead {
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 560;
+}
+
+.page-motif {
+  align-items: center;
+  border-left: 1px solid var(--color-line);
+  display: flex;
+  padding-left: clamp(2rem, 5vw, 5rem);
+}
+
+.page-motif .plot-motif {
+  opacity: 0.58;
+}
+
+@media (max-width: 760px) {
+  .site-header {
+    grid-template-columns: 1fr auto;
+    min-height: 4.5rem;
+  }
+
+  .desktop-navigation,
+  .profile-state {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
+    justify-self: end;
+    position: relative;
+  }
+
+  .mobile-menu summary {
+    cursor: pointer;
+    font-size: 0;
+    height: 2rem;
+    list-style: none;
+    position: relative;
+    width: 2rem;
+  }
+
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-menu summary::before,
+  .mobile-menu summary::after,
+  .mobile-menu summary span::after {
+    background: var(--color-ink);
+    content: "";
+    height: 1px;
+    position: absolute;
+    right: 0;
+    width: 1.65rem;
+  }
+
+  .mobile-menu summary::before {
+    top: 0.45rem;
+  }
+
+  .mobile-menu summary span::after {
+    top: 0.95rem;
+  }
+
+  .mobile-menu summary::after {
+    top: 1.45rem;
+  }
+
+  .mobile-menu nav {
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-line);
+    border-top: 1px solid var(--color-line);
+    padding: 1rem var(--gutter) 1.5rem;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 4.5rem;
+    z-index: 10;
+  }
+
+  .mobile-menu ul {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .mobile-menu a {
+    border-bottom: 1px solid var(--color-line);
+    font-family: var(--font-display);
+    font-size: 2rem;
+    padding: 0.75rem 0;
+  }
+
+  .hero {
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 4rem 0 3rem;
+  }
+
+  .preview-page {
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    min-height: calc(100vh - 9.5rem);
+    padding: 4rem 0 2.5rem;
+  }
+
+  .preview-page-message {
+    margin-top: 2.5rem;
+  }
+
+  .page-motif {
+    border-left: 0;
+    border-top: 1px solid var(--color-line);
+    justify-content: flex-end;
+    padding: 1.5rem 0 0;
+  }
+
+  .page-motif .plot-motif {
+    max-width: 12rem;
+  }
+
+  .hero h1,
+  .page-title {
+    font-size: clamp(3.4rem, 17vw, 5.5rem);
+  }
+
+  .hero-plot {
+    justify-items: end;
+  }
+
+  .plot-motif {
+    max-width: 18rem;
+  }
+
+  .evidence-section,
+  .activity-section {
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .section-copy {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

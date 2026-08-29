@@ -1,0 +1,48 @@
+---
+const currentPath = Astro.url.pathname;
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/works/", label: "Works" },
+  { href: "/notes/", label: "Notes" },
+  { href: "/about/", label: "About" },
+];
+
+const isCurrent = (href: string) =>
+  href === "/" ? currentPath === href : currentPath.startsWith(href);
+---
+
+<header class="site-header">
+  <a class="site-name" href="/" aria-label="Admissions Portfolio home">
+    <span>Admissions</span>
+    <span>Portfolio</span>
+  </a>
+
+  <nav class="desktop-navigation" aria-label="Primary">
+    <ul>
+      {links.map((link) => (
+        <li>
+          <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <span class="profile-state">Profile pending</span>
+
+  <details class="mobile-menu">
+    <summary aria-label="Open navigation menu" role="button"><span>Menu</span></summary>
+    <nav aria-label="Mobile">
+      <ul>
+        {links.map((link) => (
+          <li>
+            <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </details>
+</header>
