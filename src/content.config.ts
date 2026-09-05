@@ -1,0 +1,30 @@
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+
+export const noteSubjects = ["Mathematics", "Economics", "Physics", "Computer Science"] as const;
+export const noteMedia = ["Written explanation", "Code", "Interactive demonstration"] as const;
+export const noteCapabilities = [
+  "Explains a mathematical idea",
+  "Builds a computational model",
+  "Interprets evidence",
+] as const;
+
+const notes = defineCollection({
+  loader: glob({
+    base: process.env.NOTE_CONTENT_DIRECTORY ?? "./src/content/notes",
+    pattern: "**/*.md",
+  }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    summary: z.string().trim().min(1),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a stable kebab-case slug"),
+    date: z.coerce.date(),
+    lifecycle: z.enum(["draft", "review", "published"]),
+    subject: z.enum(noteSubjects),
+    media: z.array(z.enum(noteMedia)).min(1),
+    capabilities: z.array(z.enum(noteCapabilities)).min(1),
+  }),
+});
+
+export const collections = { notes };

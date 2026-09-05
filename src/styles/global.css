@@ -305,6 +305,117 @@ main {
   font-weight: 560;
 }
 
+.notes-index,
+.note-detail {
+  padding: clamp(4.5rem, 9vw, 8rem) 0;
+}
+
+.notes-heading {
+  border-bottom: 1px solid var(--color-line);
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.eyebrow,
+.note-meta,
+.note-back,
+.note-facts dt {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.notes-heading > p:last-child,
+.note-summary {
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  line-height: 1.55;
+  max-width: 42rem;
+}
+
+.note-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.note-list li {
+  border-bottom: 1px solid var(--color-line);
+  padding: clamp(2.5rem, 5vw, 4.5rem) 0;
+}
+
+.note-meta {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.note-list h2,
+.note-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 5.5rem);
+  font-weight: 430;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+  margin: 1rem 0;
+}
+
+.note-list h2 a {
+  text-decoration: none;
+}
+
+.note-list article > p {
+  color: var(--color-muted);
+  line-height: 1.65;
+  max-width: 42rem;
+}
+
+.note-detail {
+  margin: 0 auto;
+  max-width: 58rem;
+}
+
+.note-header {
+  border-bottom: 1px solid var(--color-line);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.note-facts {
+  display: grid;
+  gap: 1rem 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 3rem 0 0;
+}
+
+.note-facts div {
+  border-top: 1px solid var(--color-line);
+  padding-top: 0.75rem;
+}
+
+.note-facts dd {
+  line-height: 1.45;
+  margin: 0.35rem 0 0;
+}
+
+.note-body {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  line-height: 1.75;
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.note-body :is(p, pre) {
+  margin: 0 0 1.5rem;
+}
+
+.note-body pre {
+  background: #f4f5f7;
+  border-left: 3px solid var(--color-accent);
+  font-family: ui-monospace, monospace;
+  font-size: 0.88rem;
+  overflow-x: auto;
+  padding: 1.25rem;
+}
+
 .page-motif {
   align-items: center;
   border-left: 1px solid var(--color-line);
@@ -450,6 +561,10 @@ main {
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
+  }
+
+  .note-facts {
+    grid-template-columns: 1fr;
   }
 }
 
