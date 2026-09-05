@@ -2,13 +2,34 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-export const noteSubjects = ["Mathematics", "Economics", "Physics", "Computer Science"] as const;
-export const noteMedia = ["Written explanation", "Code", "Interactive demonstration"] as const;
+export const noteSubjects = [
+  "Mathematics",
+  "Economics",
+  "Physics",
+  "Computer Science",
+] as const;
+export const noteMedia = [
+  "Written explanation",
+  "Code",
+  "Interactive demonstration",
+] as const;
 export const noteCapabilities = [
   "Explains a mathematical idea",
   "Builds a computational model",
   "Interprets evidence",
 ] as const;
+export const workMedia = [
+  "Web experience",
+  "Command-line program",
+  "3D animation",
+  "Interactive application",
+] as const;
+export const workCategories = [
+  "Interactive systems",
+  "Computational investigations",
+  "Visual explanations",
+] as const;
+export const workInteractions = ["sorting-bars"] as const;
 
 const notes = defineCollection({
   loader: glob({
@@ -18,7 +39,9 @@ const notes = defineCollection({
   schema: z.object({
     title: z.string().trim().min(1),
     summary: z.string().trim().min(1),
-    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a stable kebab-case slug"),
+    slug: z
+      .string()
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a stable kebab-case slug"),
     date: z.coerce.date(),
     lifecycle: z.enum(["draft", "review", "published"]),
     subject: z.enum(noteSubjects),
@@ -27,4 +50,35 @@ const notes = defineCollection({
   }),
 });
 
-export const collections = { notes };
+const works = defineCollection({
+  loader: glob({
+    base: process.env.WORK_CONTENT_DIRECTORY ?? "./src/content/works",
+    pattern: "**/*.md",
+  }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    summary: z.string().trim().min(1),
+    slug: z
+      .string()
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a stable kebab-case slug"),
+    date: z.coerce.date(),
+    lifecycle: z.enum(["draft", "review", "published"]),
+    subject: z.enum(noteSubjects),
+    category: z.enum(workCategories),
+    media: z.array(z.enum(workMedia)).min(1),
+    capabilities: z.array(z.enum(noteCapabilities)).min(1),
+    contribution: z.string().trim().min(1),
+    interaction: z.enum(workInteractions).optional(),
+    evidence: z.object({
+      problem: z.string().trim().min(1),
+      hypothesis: z.string().trim().min(1),
+      process: z.string().trim().min(1),
+      decisions: z.string().trim().min(1),
+      outcome: z.string().trim().min(1),
+      validation: z.string().trim().min(1),
+      limitations: z.string().trim().min(1),
+    }),
+  }),
+});
+
+export const collections = { notes, works };

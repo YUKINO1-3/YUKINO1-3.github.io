@@ -11,6 +11,7 @@ export default defineConfig({
     command: "pnpm build && pnpm preview",
     env: {
       NOTE_CONTENT_DIRECTORY: "./tests/fixtures/notes",
+      WORK_CONTENT_DIRECTORY: "./tests/fixtures/works",
     },
     url: "http://127.0.0.1:4321",
     reuseExistingServer: !process.env.CI,

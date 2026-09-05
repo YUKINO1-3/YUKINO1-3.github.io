@@ -4,13 +4,18 @@ import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 
 const noteContentDirectory = "./tests/fixtures/notes";
+const workContentDirectory = "./tests/fixtures/works";
 const notesDirectory = join(process.cwd(), noteContentDirectory);
 
 function buildFixtures() {
   return execSync("pnpm build", {
     cwd: process.cwd(),
     encoding: "utf8",
-    env: { ...process.env, NOTE_CONTENT_DIRECTORY: noteContentDirectory },
+    env: {
+      ...process.env,
+      NOTE_CONTENT_DIRECTORY: noteContentDirectory,
+      WORK_CONTENT_DIRECTORY: workContentDirectory,
+    },
     stdio: "pipe",
   });
 }

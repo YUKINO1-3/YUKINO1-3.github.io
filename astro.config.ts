@@ -11,54 +11,69 @@ import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 
-function rejectExecutableNoteFiles(): AstroIntegration {
+function validateContentFiles(): AstroIntegration {
   return {
-    name: "reject-executable-note-files",
+    name: "validate-content-files",
     hooks: {
       "astro:config:setup": ({ logger }) => {
-        const notesDirectory = resolve(
-          process.cwd(),
-          process.env.NOTE_CONTENT_DIRECTORY ?? "src/content/notes",
-        );
-        const files = readdirSync(notesDirectory, { recursive: true, withFileTypes: true }).filter(
-          (entry) => entry.isFile(),
-        );
-        const executableExtensions = new Set([".astro", ".jsx", ".mdx", ".tsx"]);
-        const invalidFile = files.find((entry) => executableExtensions.has(extname(entry.name)));
-
-        if (invalidFile) {
-          logger.error(
-            `Unsupported executable Note file "${invalidFile.name}". MDX, Astro, and React content are not allowed.`,
+        const contentDirectories = [
+          {
+            name: "Note",
+            path: process.env.NOTE_CONTENT_DIRECTORY ?? "src/content/notes",
+          },
+          {
+            name: "Work",
+            path: process.env.WORK_CONTENT_DIRECTORY ?? "src/content/works",
+          },
+        ];
+        const executableExtensions = new Set([
+          ".astro",
+          ".jsx",
+          ".mdx",
+          ".tsx",
+        ]);
+        for (const contentDirectory of contentDirectories) {
+          const directory = resolve(process.cwd(), contentDirectory.path);
+          const files = readdirSync(directory, {
+            recursive: true,
+            withFileTypes: true,
+          }).filter((entry) => entry.isFile());
+          const invalidFile = files.find((entry) =>
+            executableExtensions.has(extname(entry.name)),
           );
-          throw new Error("Executable Note content is not allowed");
-        }
-
-        const noteBySlug = new Map<string, string>();
-        for (const file of files.filter((entry) => extname(entry.name) === ".md")) {
-          const filePath = join(file.parentPath, file.name);
-          const parsedNote = matter(readFileSync(filePath, "utf8"));
-          const slug = parsedNote.data.slug;
-          if (typeof slug !== "string") continue;
-
-          const markdownTree = unified().use(remarkParse).parse(parsedNote.content);
-          visit(markdownTree, "html", (node) => {
-            const harmlessInlineMarkup = /^<\/?(?:kbd|mark|sub|sup)>$/i;
-            if (harmlessInlineMarkup.test(node.value.trim())) return;
-
-            throw new Error(
-              `Unsafe executable or embedded markup in ${file.name}: ${node.value.slice(0, 60)}. ` +
-                "Use Markdown, fenced code, math, or harmless inline kbd/mark/sub/sup markup.",
+          if (invalidFile) {
+            logger.error(
+              `Unsupported executable ${contentDirectory.name} file "${invalidFile.name}". MDX, Astro, and React content are not allowed.`,
             );
-          });
-
-          const existingNote = noteBySlug.get(slug);
-          if (existingNote) {
             throw new Error(
-              `Duplicate Note slug "${slug}" in "${existingNote}" and "${file.name}". ` +
-                "Give every Note a unique stable slug.",
+              `Executable ${contentDirectory.name} content is not allowed`,
             );
           }
-          noteBySlug.set(slug, file.name);
+          const fileBySlug = new Map<string, string>();
+          for (const file of files.filter(
+            (entry) => extname(entry.name) === ".md",
+          )) {
+            const filePath = join(file.parentPath, file.name);
+            const parsedContent = matter(readFileSync(filePath, "utf8"));
+            const slug = parsedContent.data.slug;
+            if (typeof slug !== "string") continue;
+            const markdownTree = unified()
+              .use(remarkParse)
+              .parse(parsedContent.content);
+            visit(markdownTree, "html", (node) => {
+              if (/^<\/?(?:kbd|mark|sub|sup)>$/i.test(node.value.trim()))
+                return;
+              throw new Error(
+                `Unsafe executable or embedded markup in ${file.name}: ${node.value.slice(0, 60)}. Use Markdown, fenced code, math, or harmless inline kbd/mark/sub/sup markup.`,
+              );
+            });
+            const existingFile = fileBySlug.get(slug);
+            if (existingFile)
+              throw new Error(
+                `Duplicate ${contentDirectory.name} slug "${slug}" in "${existingFile}" and "${file.name}". Give every ${contentDirectory.name} a unique stable slug.`,
+              );
+            fileBySlug.set(slug, file.name);
+          }
         }
       },
     },
@@ -66,7 +81,7 @@ function rejectExecutableNoteFiles(): AstroIntegration {
 }
 
 export default defineConfig({
-  integrations: [rejectExecutableNoteFiles(), react()],
+  integrations: [validateContentFiles(), react()],
   markdown: {
     processor: astroUnified({
       remarkPlugins: [remarkMath],

@@ -4,7 +4,8 @@
   --color-muted: #5f6066;
   --color-line: #c9cbd1;
   --color-accent: #1e4ed8;
-  --font-display: "Newsreader Variable", "Iowan Old Style", Baskerville, Georgia, serif;
+  --font-display:
+    "Newsreader Variable", "Iowan Old Style", Baskerville, Georgia, serif;
   --font-ui: "Inter Variable", Inter, system-ui, sans-serif;
   --gutter: clamp(1.25rem, 4vw, 4rem);
   --content-width: 94rem;
@@ -306,8 +307,159 @@ main {
 }
 
 .notes-index,
-.note-detail {
+.note-detail,
+.works-index,
+.case-study {
   padding: clamp(4.5rem, 9vw, 8rem) 0;
+}
+
+.work-category,
+.capabilities,
+.case-evidence {
+  border-top: 1px solid var(--color-line);
+  padding: clamp(2.5rem, 5vw, 4.5rem) 0;
+}
+
+.work-category > h2,
+.capabilities > h2,
+.case-evidence h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 430;
+  margin: 0 0 1.5rem;
+}
+
+.note-list h3 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 5.5rem);
+  font-weight: 430;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+  margin: 1rem 0;
+}
+
+.note-list h3 a {
+  text-decoration: none;
+}
+.note-list article > p {
+  color: var(--color-muted);
+  line-height: 1.65;
+  max-width: 42rem;
+}
+
+.capability-list {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  background: var(--color-line);
+}
+.capability-list article {
+  background: var(--color-paper);
+  padding: 1.5rem;
+}
+.capability-list h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin: 0 0 1rem;
+}
+.capability-list ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.case-study {
+  margin: 0 auto;
+  max-width: 68rem;
+}
+.case-study .note-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 7vw, 6.5rem);
+  font-weight: 430;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  margin: 1rem 0;
+}
+.case-evidence {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.case-evidence section:last-of-type,
+.case-evidence .note-body {
+  grid-column: 1 / -1;
+}
+.case-evidence section {
+  border-top: 1px solid var(--color-line);
+  padding-top: 1rem;
+}
+.case-evidence h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+.case-evidence p {
+  line-height: 1.65;
+  margin: 0;
+}
+
+.sorting-demo {
+  border-bottom: 1px solid var(--color-line);
+  padding: 3rem 0;
+}
+
+.sorting-demo label {
+  display: grid;
+  font-weight: 650;
+  gap: 0.4rem;
+  max-width: 15rem;
+}
+
+.sorting-demo select {
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  font: inherit;
+  padding: 0.65rem;
+}
+.sorting-bars {
+  align-items: end;
+  display: flex;
+  gap: 0.75rem;
+  height: 13rem;
+  margin-bottom: 1.5rem;
+}
+.sorting-bars > span {
+  background: var(--color-accent);
+  display: block;
+  flex: 1;
+  max-width: 5rem;
+}
+.sorting-demo button {
+  background: var(--color-ink);
+  border: 0;
+  color: var(--color-paper);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.75rem 1rem;
+}
+
+.sorting-demo button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.sorting-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
 .notes-heading {
@@ -580,6 +732,14 @@ main {
 
   .note-facts {
     grid-template-columns: 1fr;
+  }
+
+  .case-evidence {
+    grid-template-columns: 1fr;
+  }
+  .case-evidence section:last-of-type,
+  .case-evidence .note-body {
+    grid-column: auto;
   }
 }
 
