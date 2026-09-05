@@ -333,6 +333,21 @@ main {
   max-width: 42rem;
 }
 
+.draft-preview-link {
+  display: inline-block;
+  font-weight: 650;
+  margin-top: 1rem;
+}
+
+.draft-badge {
+  color: #9a4d00;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 1.5rem 0 0;
+  text-transform: uppercase;
+}
+
 .note-list {
   list-style: none;
   margin: 0;

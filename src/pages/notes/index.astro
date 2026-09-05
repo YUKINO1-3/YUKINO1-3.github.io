@@ -5,6 +5,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const notes = (await getCollection("notes", ({ data }) => data.lifecycle === "published")).sort(
   (left, right) => right.data.date.valueOf() - left.data.date.valueOf(),
 );
+const showDrafts = import.meta.env.DEV;
 ---
 
 <BaseLayout title="Notes" description="Applicant-authored explanations of academic ideas.">
@@ -13,6 +14,7 @@ const notes = (await getCollection("notes", ({ data }) => data.lifecycle === "pu
       <p class="eyebrow">Academic writing</p>
       <h1 class="page-title">Notes</h1>
       <p>Applicant-authored explanations, published only after review.</p>
+      {showDrafts && <a class="draft-preview-link" href="/notes/drafts/">Preview drafts</a>}
     </header>
     <ol class="note-list">
       {notes.map(({ data }) => (
