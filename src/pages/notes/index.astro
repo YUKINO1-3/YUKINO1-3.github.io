@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import EvidenceFilters from "../../components/EvidenceFilters.astro";
 
 const notes = (await getCollection("notes", ({ data }) => data.lifecycle === "published")).sort(
   (left, right) => right.data.date.valueOf() - left.data.date.valueOf(),
@@ -16,9 +17,10 @@ const showDrafts = import.meta.env.DEV;
       <p>Applicant-authored explanations, published only after review.</p>
       {showDrafts && <a class="draft-preview-link" href="/notes/drafts/">Preview drafts</a>}
     </header>
+    <EvidenceFilters items={notes.map(({ data }) => data)}>
     <ol class="note-list">
       {notes.map(({ data }) => (
-        <li>
+        <li data-evidence-item={JSON.stringify({ subject: data.subject, media: data.media, capabilities: data.capabilities })}>
           <article>
             <div class="note-meta">
               <time datetime={data.date.toISOString()}>{data.date.toLocaleDateString("en-GB", { dateStyle: "long" })}</time>
@@ -30,5 +32,6 @@ const showDrafts = import.meta.env.DEV;
         </li>
       ))}
     </ol>
+    </EvidenceFilters>
   </section>
 </BaseLayout>

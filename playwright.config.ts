@@ -1,5 +1,8 @@
 import { defineConfig } from "@playwright/test";
 
+// Also inherited by the build-validation tests' child processes.
+process.env.MILESTONE_CONTENT_DIRECTORY = "./tests/fixtures/milestones";
+
 export default defineConfig({
   testDir: "tests/e2e",
   // Build-validation tests temporarily add content fixtures to the shared collection.

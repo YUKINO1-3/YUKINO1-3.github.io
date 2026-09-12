@@ -117,4 +117,24 @@ const academicResults = defineCollection({
   }),
 });
 
-export const collections = { notes, works, academicResults };
+const milestoneLoader = glob({
+  base: process.env.MILESTONE_CONTENT_DIRECTORY ?? "./src/content/milestones",
+  pattern: "**/*.md",
+});
+const milestones = defineCollection({
+  loader: {
+    ...milestoneLoader,
+    load: async (context) => {
+      context.store.clear();
+      await milestoneLoader.load(context);
+    },
+  },
+  schema: z.object({
+    title: z.string().trim().min(1),
+    summary: z.string().trim().min(1),
+    date: z.coerce.date(),
+    lifecycle: z.enum(["draft", "review", "published"]),
+  }),
+});
+
+export const collections = { notes, works, academicResults, milestones };

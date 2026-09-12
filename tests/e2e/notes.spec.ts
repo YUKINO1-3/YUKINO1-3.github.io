@@ -6,7 +6,7 @@ test("a published Note appears in the index and at its stable address", async ({
   const noteLink = page.getByRole("link", { name: "Completing the square, visually" });
   await expect(noteLink).toHaveAttribute("href", "/notes/completing-the-square/");
   await expect(page.getByText("A geometric route from a quadratic expression to vertex form.")).toBeVisible();
-  await expect(page.getByText("Mathematics", { exact: true })).toBeVisible();
+  await expect(page.locator(".note-list").getByText("Mathematics", { exact: true })).toBeVisible();
 
   await noteLink.click();
   await expect(page).toHaveURL(/\/notes\/completing-the-square\/$/);
