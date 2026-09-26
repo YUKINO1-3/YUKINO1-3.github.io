@@ -85,6 +85,31 @@ describe("parseIssueFormBody", () => {
     const fields = parseIssueFormBody(body);
     expect(fields["Qualification"]).toBe("A-Level");
   });
+
+  it("does not let an unrelated '### '-prefixed line inside a value truncate that value or spawn a bogus key", () => {
+    const body = representativeIssueBody({
+      result:
+        "A*\n### Not a real heading, just my own notes\nstill part of my answer",
+    });
+    const fields = parseIssueFormBody(body);
+    expect(fields["Result"]).toBe(
+      "A*\n### Not a real heading, just my own notes\nstill part of my answer",
+    );
+    expect(fields["Awarding body"]).toBe("AQA");
+    expect(Object.keys(fields)).toEqual(
+      expect.arrayContaining([
+        "Qualification",
+        "Subject",
+        "Result",
+        "Predicted or achieved?",
+        "Awarding body",
+        "Examination session",
+        "Evidence checked?",
+        "Effective date (YYYY-MM-DD)",
+      ]),
+    );
+    expect(Object.keys(fields)).toHaveLength(8);
+  });
 });
 
 describe("buildAcademicResultCandidate", () => {
@@ -155,6 +180,19 @@ describe("buildAcademicResultCandidate", () => {
     delete fields["Qualification"];
     const result = buildAcademicResultCandidate(fields);
     expect(result.success).toBe(false);
+  });
+
+  it("rejects rather than silently truncates a value containing an embedded heading-like line", () => {
+    const body = representativeIssueBody({
+      result: "A*\n### Not a real heading\nstill part of my answer",
+    });
+    const result = buildAcademicResultCandidate(parseIssueFormBody(body));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.errors.some((error) => error.includes("Result"))).toBe(
+        true,
+      );
+    }
   });
 });
 
@@ -230,6 +268,14 @@ describe("processIssue", () => {
     expect(academicResultSchema.safeParse(decision.data).success).toBe(true);
     expect(decision.prBody).toContain("No generative AI");
     expect(decision.prBody).toContain("Closes #12");
+  });
+
+  it("pads the file name so ids of different issue-number lengths still sort in numeric order", () => {
+    // AcademicResults.astro tie-breaks equal effectiveDate entries with a
+    // plain string compare on collection id; an unpadded "issue-2" vs
+    // "issue-10" would sort in the wrong order.
+    expect(filePathFor(2) < filePathFor(10)).toBe(true);
+    expect(filePathFor(9) < filePathFor(10)).toBe(true);
   });
 
   it("is idempotent: the same issue always produces the same decision", () => {

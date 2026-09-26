@@ -46,7 +46,11 @@ export function branchNameFor(issueNumber: number): string {
 }
 
 export function filePathFor(issueNumber: number): string {
-  return `src/content/academic-results/issue-${issueNumber}.md`;
+  // Zero-padded so the collection id sorts numerically: AcademicResults.astro
+  // tie-breaks equal effectiveDate entries with a plain string compare on id,
+  // which would otherwise place e.g. "issue-10" before "issue-2".
+  const padded = String(issueNumber).padStart(6, "0");
+  return `src/content/academic-results/issue-${padded}.md`;
 }
 
 /** Serializes via gray-matter so untrusted field values can never break out of YAML frontmatter. */

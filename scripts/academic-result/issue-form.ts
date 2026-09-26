@@ -10,19 +10,27 @@ const HEADING = Object.fromEntries(
 
 const NO_RESPONSE = "_No response_";
 
-/** Parses a GitHub Issue Form's rendered `### <label>` body into a heading -> value map. */
+const KNOWN_HEADINGS = new Set<string>(FORM_FIELDS.map((f) => f.heading));
+
+/**
+ * Parses a GitHub Issue Form's rendered `### <label>` body into a heading ->
+ * value map. Only splits on lines matching one of this form's own known
+ * headings (not any `### `-prefixed line), so a value that happens to
+ * contain a markdown heading of its own is kept intact as part of that
+ * value rather than silently truncated into an unrelated key.
+ */
 export function parseIssueFormBody(body: string): Record<string, string> {
   const normalized = body.replace(/\r\n/g, "\n");
-  const sections = normalized.split(/^### /m).slice(1);
-  const fields: Record<string, string> = {};
+  const matches = [...normalized.matchAll(/^### (.+)$/gm)].filter((match) =>
+    KNOWN_HEADINGS.has(match[1].trim()),
+  );
 
-  for (const section of sections) {
-    const newlineIndex = section.indexOf("\n");
-    const heading = (
-      newlineIndex === -1 ? section : section.slice(0, newlineIndex)
-    ).trim();
-    const rawValue =
-      newlineIndex === -1 ? "" : section.slice(newlineIndex + 1).trim();
+  const fields: Record<string, string> = {};
+  for (const [index, match] of matches.entries()) {
+    const heading = match[1].trim();
+    const valueStart = match.index + match[0].length;
+    const valueEnd = matches[index + 1]?.index ?? normalized.length;
+    const rawValue = normalized.slice(valueStart, valueEnd).trim();
     fields[heading] = rawValue === NO_RESPONSE ? "" : rawValue;
   }
 
@@ -55,6 +63,16 @@ export function buildAcademicResultCandidate(
   fields: Record<string, string>,
 ): IssueFormResult {
   const errors: string[] = [];
+
+  // Every one of this form's fields renders as a single-line input or a
+  // fixed dropdown, so a real submission can never contain a raw newline.
+  // Reject rather than silently truncate one that does (e.g. an issue
+  // created directly via the API instead of through the form UI).
+  for (const { heading } of FORM_FIELDS) {
+    if ((fields[heading] ?? "").includes("\n")) {
+      errors.push(`"${heading}" must be a single line.`);
+    }
+  }
 
   const statusRaw = field(fields, "status").toLowerCase();
   if (statusRaw !== "achieved" && statusRaw !== "predicted") {
