@@ -3,6 +3,7 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { academicResultSchema } from "./schemas/academic-result";
 
 export const noteSubjects = [
   "Mathematics",
@@ -117,24 +118,7 @@ const academicResults = defineCollection({
       await academicResultLoader.load(context);
     },
   },
-  schema: z.object({
-    qualification: z.string().trim().min(1),
-    subject: z.string().trim().min(1).optional(),
-    result: z
-      .string()
-      .trim()
-      .min(1)
-      .refine(
-        (value) => !/^(pending|tbd|tbc|n\/?a|[-–—]+)$/i.test(value),
-        "Record a real grade or score, not a placeholder",
-      ),
-    status: z.enum(["predicted", "achieved"]),
-    awardingBody: z.string().trim().min(1),
-    examinationSession: z.string().trim().min(1),
-    evidenceChecked: z.boolean(),
-    effectiveDate: z.iso.date(),
-    public: z.boolean(),
-  }),
+  schema: academicResultSchema,
 });
 
 const milestoneLoader = glob({
