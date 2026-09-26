@@ -4,23 +4,9 @@ import { z } from "astro/zod";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { academicResultSchema } from "./schemas/academic-result";
+import { noteSchema, noteSubjects, noteCapabilities } from "./schemas/note";
 
-export const noteSubjects = [
-  "Mathematics",
-  "Economics",
-  "Physics",
-  "Computer Science",
-] as const;
-export const noteMedia = [
-  "Written explanation",
-  "Code",
-  "Interactive demonstration",
-] as const;
-export const noteCapabilities = [
-  "Explains a mathematical idea",
-  "Builds a computational model",
-  "Interprets evidence",
-] as const;
+export { noteSubjects, noteMedia, noteCapabilities } from "./schemas/note";
 export const workMedia = [
   "Web experience",
   "Command-line program",
@@ -42,24 +28,7 @@ const notes = defineCollection({
     base: process.env.NOTE_CONTENT_DIRECTORY ?? "./src/content/notes",
     pattern: "**/*.md",
   }),
-  schema: z
-    .object({
-      title: z.string().trim().min(1),
-      summary: z.string().trim().min(1),
-      slug: z
-        .string()
-        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a stable kebab-case slug"),
-      date: z.coerce.date(),
-      updated: z.coerce.date().optional(),
-      lifecycle: z.enum(["draft", "review", "published"]),
-      subject: z.enum(noteSubjects),
-      media: z.array(z.enum(noteMedia)).min(1),
-      capabilities: z.array(z.enum(noteCapabilities)).min(1),
-    })
-    .refine((data) => !data.updated || data.updated >= data.date, {
-      message: "updated must not be before date",
-      path: ["updated"],
-    }),
+  schema: noteSchema,
 });
 
 const works = defineCollection({

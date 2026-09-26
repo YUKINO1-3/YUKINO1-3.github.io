@@ -2,39 +2,17 @@ import {
   academicResultSchema,
   type AcademicResult,
 } from "../../src/schemas/academic-result.ts";
+import { parseIssueFormBody as parseKnownHeadings } from "../shared/issue-form-parser.ts";
 import { FORM_FIELDS, type FormFieldKey } from "./form-fields.ts";
 
 const HEADING = Object.fromEntries(
   FORM_FIELDS.map(({ heading, key }) => [key, heading]),
 ) as Record<FormFieldKey, string>;
 
-const NO_RESPONSE = "_No response_";
+const KNOWN_HEADINGS = FORM_FIELDS.map((f) => f.heading);
 
-const KNOWN_HEADINGS = new Set<string>(FORM_FIELDS.map((f) => f.heading));
-
-/**
- * Parses a GitHub Issue Form's rendered `### <label>` body into a heading ->
- * value map. Only splits on lines matching one of this form's own known
- * headings (not any `### `-prefixed line), so a value that happens to
- * contain a markdown heading of its own is kept intact as part of that
- * value rather than silently truncated into an unrelated key.
- */
 export function parseIssueFormBody(body: string): Record<string, string> {
-  const normalized = body.replace(/\r\n/g, "\n");
-  const matches = [...normalized.matchAll(/^### (.+)$/gm)].filter((match) =>
-    KNOWN_HEADINGS.has(match[1].trim()),
-  );
-
-  const fields: Record<string, string> = {};
-  for (const [index, match] of matches.entries()) {
-    const heading = match[1].trim();
-    const valueStart = match.index + match[0].length;
-    const valueEnd = matches[index + 1]?.index ?? normalized.length;
-    const rawValue = normalized.slice(valueStart, valueEnd).trim();
-    fields[heading] = rawValue === NO_RESPONSE ? "" : rawValue;
-  }
-
-  return fields;
+  return parseKnownHeadings(body, KNOWN_HEADINGS);
 }
 
 function field(fields: Record<string, string>, key: FormFieldKey): string {
